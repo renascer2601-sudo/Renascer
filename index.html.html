@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENASCER - Mentoria & Orientação</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-backdrop { background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .tab-btn.active { border-bottom: 2px solid #4f46e5; color: #4f46e5; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center cursor-pointer" onclick="showView('home')">
+                <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white mr-3">
+                    <i class="fas fa-chart-line text-xl"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tight text-indigo-900">RENASCER</span>
+            </div>
+            <div class="flex space-x-4">
+                <button onclick="showView('home')" class="px-3 py-2 text-sm font-medium text-slate-500 hover:text-indigo-600">Início</button>
+                <button onclick="showView('admin')" class="flex items-center space-x-2 px-3 py-2 rounded-md bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-sm transition font-bold border border-indigo-100">
+                    <i class="fas fa-lock text-xs"></i>
+                    <span>Área Restrita</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- VIEWS -->
+    <main id="main-content">
+        
+        <!-- Home View -->
+        <section id="view-home" class="view animate-fade-in">
+            <div class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <span class="inline-block py-1 px-3 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase mb-4 tracking-widest text-center">Mentoria & Orientação</span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6">Dê passos conscientes na sua vida <span class="text-indigo-600">profissional e pessoal.</span></h1>
+                    <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-12">No RENASCER ouvimos, orientamos e ajudamos-te a agir. Escolha a área que deseja transformar hoje.</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-8 text-left">
+                        <div onclick="startQuiz('profissional')" class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group">
+                            <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center mb-6"><i class="fas fa-briefcase text-2xl"></i></div>
+                            <h3 class="text-xl font-bold mb-3">Diagnóstico Profissional</h3>
+                            <p class="text-slate-500 text-sm mb-6">Avalie a sua carreira, CV e prontidão para o mercado de trabalho.</p>
+                            <span class="text-indigo-600 font-bold text-sm flex items-center">Começar <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i></span>
+                        </div>
+
+                        <div onclick="startQuiz('academico')" class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-lg flex items-center justify-center mb-6"><i class="fas fa-book-open text-2xl"></i></div>
+                            <h3 class="text-xl font-bold mb-3">Crescimento Académico</h3>
+                            <p class="text-slate-500 text-sm mb-6">Para estudantes que querem ingressar ou destravar os estudos superiores.</p>
+                            <span class="text-indigo-600 font-bold text-sm flex items-center">Começar <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i></span>
+                        </div>
+
+                        <div onclick="startQuiz('pessoal')" class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group">
+                            <div class="w-12 h-12 bg-purple-50 text-purple-500 rounded-lg flex items-center justify-center mb-6"><i class="fas fa-user text-2xl"></i></div>
+                            <h3 class="text-xl font-bold mb-3">Diagnóstico Pessoal</h3>
+                            <p class="text-slate-500 text-sm mb-6">Espaço seguro para desabafar, encontrar clareza mental e equilíbrio.</p>
+                            <span class="text-indigo-600 font-bold text-sm flex items-center">Começar <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz View -->
+        <section id="view-quiz" class="view hidden py-12 px-4 animate-fade-in">
+            <div class="max-w-2xl mx-auto">
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="quiz-progress-text" class="text-xs font-bold text-indigo-600 uppercase">Passo 1</span>
+                        <span id="quiz-type-badge" class="text-xs text-slate-400 capitalize">Diagnóstico</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-indigo-600 h-full transition-all duration-500" style="width: 20%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+                    <div id="quiz-container" class="p-8">
+                        <!-- JS content -->
+                    </div>
+                    <div class="bg-slate-50 p-6 flex justify-between">
+                        <button id="prev-btn" onclick="prevStep()" class="px-6 py-2 text-slate-400 font-semibold transition">Anterior</button>
+                        <button id="next-btn" onclick="nextStep()" class="bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition">Seguinte</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success View -->
+        <section id="view-success" class="view hidden py-20 px-4 text-center animate-fade-in">
+            <div class="max-w-xl mx-auto">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+                    <i class="fas fa-check text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold mb-4">Diagnóstico Concluído!</h2>
+                <p class="text-slate-600 mb-10 text-lg">Obrigado por partilhares o teu momento connosco. Acede agora ao grupo exclusivo da mentoria.</p>
+                <a id="whatsapp-link" href="#" target="_blank" class="inline-flex items-center justify-center bg-emerald-500 text-white px-10 py-4 rounded-2xl font-bold text-lg shadow-xl hover:bg-emerald-600 transition-all hover:scale-105">
+                    <i class="fab fa-whatsapp mr-3 text-2xl"></i>
+                    Aceder ao Grupo do WhatsApp
+                </a>
+            </div>
+        </section>
+
+        <!-- Admin Login View -->
+        <section id="view-admin-login" class="view hidden py-32 px-4 animate-fade-in">
+            <div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                        <i class="fas fa-lock text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Painel da Mentora</h2>
+                    <p class="text-slate-500">Acesso exclusivo para visualização de estatísticas.</p>
+                </div>
+                <input type="password" id="admin-pass" class="w-full px-4 py-3 rounded-xl border border-slate-200 mb-4 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Palavra-passe">
+                <p id="login-error" class="text-red-500 text-sm mb-4 hidden">Palavra-passe incorreta.</p>
+                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition">Entrar</button>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard View -->
+        <section id="view-admin-dashboard" class="view hidden py-12 px-4 animate-fade-in">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold">Painel de Gestão RENASCER</h1>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="exportData()" class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg font-semibold border border-emerald-100 text-sm">Exportar CSV</button>
+                        <button onclick="logout()" class="p-2 text-slate-400 hover:text-red-500 transition"><i class="fas fa-sign-out-alt text-xl"></i></button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex border-b border-slate-200 mb-8 space-x-8 overflow-x-auto">
+                    <button onclick="switchTab('respostas')" id="tab-respostas" class="tab-btn active pb-4 px-2 font-bold transition">Respostas</button>
+                    <button onclick="switchTab('analises')" id="tab-analises" class="tab-btn pb-4 px-2 font-bold transition">Análises & Dashboards</button>
+                </div>
+
+                <!-- Content Respostas -->
+                <div id="admin-respostas-content">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                                    <tr>
+                                        <th class="px-6 py-4">Data</th>
+                                        <th class="px-6 py-4">Nome</th>
+                                        <th class="px-6 py-4">Género</th>
+                                        <th class="px-6 py-4">Contacto</th>
+                                        <th class="px-6 py-4">Tipo</th>
+                                        <th class="px-6 py-4">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-table-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Analises -->
+                <div id="admin-analises-content" class="hidden animate-fade-in">
+                    <div class="grid md:grid-cols-3 gap-6 mb-10" id="stats-summary">
+                        <!-- JS populated -->
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Gênero Dashboard -->
+                        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="font-bold mb-6 flex items-center"><i class="fas fa-venus-mars mr-2 text-indigo-500"></i> Distribuição por Género</h3>
+                            <div id="chart-gender" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Idade Dashboard -->
+                        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="font-bold mb-6 flex items-center"><i class="fas fa-calendar-alt mr-2 text-indigo-500"></i> Distribuição por Idade</h3>
+                            <div id="chart-age" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Aderência Dashboard -->
+                        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="font-bold mb-6 flex items-center"><i class="fas fa-chart-pie mr-2 text-indigo-500"></i> Nível de Aderência (Áreas)</h3>
+                            <div id="chart-type" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Status Dashboard -->
+                        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="font-bold mb-6 flex items-center"><i class="fas fa-info-circle mr-2 text-indigo-500"></i> Situação dos Leads</h3>
+                            <div id="chart-status" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="response-modal" class="fixed inset-0 z-[100] modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+            <div class="p-6 border-b flex justify-between items-center bg-indigo-600 text-white">
+                <h3 class="text-xl font-bold" id="modal-title">Detalhes</h3>
+                <button onclick="closeModal()" class="text-white hover:rotate-90 transition-transform"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-8 max-h-[70vh] overflow-y-auto" id="modal-content"></div>
+            <div class="p-4 bg-slate-50 border-t text-right">
+                <button onclick="closeModal()" class="px-6 py-2 bg-slate-900 text-white rounded-xl font-bold">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center space-x-8 mb-8">
+                <a href="https://www.instagram.com/nyenjecupane?igsh=MXJqNTQ1a2lmZHZjNw==" target="_blank" class="text-slate-400 hover:text-pink-500 transition-all transform hover:scale-125"><i class="fab fa-instagram text-3xl"></i></a>
+                <a href="https://www.facebook.com/share/188Mi3ZfT8/" target="_blank" class="text-slate-400 hover:text-blue-600 transition-all transform hover:scale-125"><i class="fab fa-facebook text-3xl"></i></a>
+                <a href="https://www.linkedin.com/in/nzaziever-nyenje-cupane-25666b120?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="text-slate-400 hover:text-blue-700 transition-all transform hover:scale-125"><i class="fab fa-linkedin text-3xl"></i></a>
+            </div>
+            <p class="text-slate-400 text-sm">© 2024 Programa RENASCER • Orientação Estratégica</p>
+        </div>
+    </footer>
+
+    <script>
+        const ADMIN_PASS = "raul_mentoria_2024";
+        const WHATSAPP_LINKS = {
+            profissional: "https://chat.whatsapp.com/HLYObJC5pC8K75DBc8JxZk",
+            academico: "https://chat.whatsapp.com/KWt0fWoFS5eL6NOkb0DkpG",
+            pessoal: "https://chat.whatsapp.com/KqxgpPZllr3EJRU7QGC6my"
+        };
+
+        const QUIZZES = {
+            profissional: [
+                { title: "Identificação", fields: [
+                    {id: "nome", label: "Nome Completo", type: "text"}, 
+                    {id: "genero", label: "Género", type: "select", options: ["Feminino", "Masculino", "Outro", "Prefiro não dizer"]}
+                ]},
+                { title: "Contacto e Idade", fields: [
+                    {id: "email", label: "E-mail", type: "text"},
+                    {id: "contato", label: "WhatsApp", type: "text"},
+                    {id: "idade", label: "Idade", type: "text"}
+                ]},
+                { title: "Perfil Profissional", fields: [
+                    {id: "status", label: "Situação Atual", type: "select", options: ["Desempregado", "Empregado", "Freelancer", "Finalista", "Empreendedor"]},
+                    {id: "tempo", label: "Há quanto tempo?", type: "text"}
+                ]},
+                { title: "Desafios", fields: [
+                    {id: "dificuldade", label: "Maior Obstáculo", type: "select", options: ["Currículo", "Entrevistas", "Networking", "Foco", "Gestão"]},
+                    {id: "objetivo", label: "Meta para 1 ano", type: "text"}
+                ]},
+                { title: "Transformação", fields: [
+                    {id: "ajuda", label: "O que esperas de nós?", type: "textarea"}
+                ]}
+            ],
+            academico: [
+                { title: "Identificação", fields: [
+                    {id: "nome", label: "Nome Completo", type: "text"}, 
+                    {id: "genero", label: "Género", type: "select", options: ["Feminino", "Masculino", "Outro", "Prefiro não dizer"]}
+                ]},
+                { title: "Contacto", fields: [
+                    {id: "email", label: "E-mail", type: "text"},
+                    {id: "contato", label: "WhatsApp", type: "text"},
+                    {id: "curso", label: "Curso / Área", type: "text"}
+                ]},
+                { title: "Nível Académico", fields: [
+                    {id: "nivel", label: "Nível Atual", type: "select", options: ["12ª Classe", "Licenciatura", "Mestrado", "Parado"]},
+                    {id: "idade", label: "Sua Idade", type: "text"}
+                ]},
+                { title: "Obstáculos", fields: [
+                    {id: "trabalho", label: "Dificuldade Principal", type: "select", options: ["Tese/Monografia", "Falta de método", "Tempo", "Motivação"]},
+                    {id: "media", label: "Média Atual", type: "text"}
+                ]},
+                { title: "Suporte", fields: [
+                    {id: "expectativa", label: "O que precisas?", type: "textarea"}
+                ]}
+            ],
+            pessoal: [
+                { title: "Identificação", fields: [
+                    {id: "nome", label: "Nome Completo", type: "text"}, 
+                    {id: "genero", label: "Género", type: "select", options: ["Feminino", "Masculino", "Outro", "Prefiro não dizer"]}
+                ]},
+                { title: "Contacto", fields: [
+                    {id: "email", label: "E-mail", type: "text"},
+                    {id: "contato", label: "WhatsApp", type: "text"},
+                    {id: "idade", label: "Sua Idade", type: "text"}
+                ]},
+                { title: "Auto-Avaliação", fields: [
+                    {id: "estado", label: "Como te sentes?", type: "select", options: ["Estagnado", "Ansioso", "Perdido", "Motivado", "Exausto"]},
+                    {id: "frequencia", label: "Há quanto tempo?", type: "text"}
+                ]},
+                { title: "Prioridades", fields: [
+                    {id: "prioridade", label: "O que mudar?", type: "select", options: ["Autoestima", "Organização", "Stress", "Relações", "Foco"]},
+                    {id: "sonho", label: "Qual o teu sonho?", type: "text"}
+                ]},
+                { title: "Sessão", fields: [
+                    {id: "desabafo", label: "Partilha algo", type: "textarea"}
+                ]}
+            ]
+        };
+
+        let currentQuizType = null;
+        let currentStep = 0;
+        let quizFormData = {};
+        let responses = JSON.parse(localStorage.getItem('renascer_data') || '[]');
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            if (viewId === 'admin') {
+                document.getElementById('view-admin-login').classList.remove('hidden');
+            } else {
+                document.getElementById('view-' + viewId).classList.remove('hidden');
+            }
+            window.scrollTo(0,0);
+        }
+
+        function startQuiz(type) {
+            currentQuizType = type;
+            currentStep = 0;
+            quizFormData = {};
+            renderQuizStep();
+            showView('quiz');
+        }
+
+        function renderQuizStep() {
+            const quiz = QUIZZES[currentQuizType];
+            const stepData = quiz[currentStep];
+            const container = document.getElementById('quiz-container');
+            
+            const prog = ((currentStep + 1) / quiz.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = prog + '%';
+            document.getElementById('quiz-progress-text').innerText = `Passo ${currentStep + 1} de ${quiz.length}`;
+            document.getElementById('quiz-type-badge').innerText = currentQuizType;
+
+            let html = `<h2 class="text-2xl font-bold mb-6 text-slate-800">${stepData.title}</h2><div class="space-y-5">`;
+            stepData.fields.forEach(f => {
+                const val = quizFormData[f.id] || '';
+                html += `<div><label class="block text-sm font-semibold text-slate-600 mb-2">${f.label}</label>`;
+                if (f.type === 'text') {
+                    html += `<input type="text" oninput="updateFormData('${f.id}', this.value)" value="${val}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none">`;
+                } else if (f.type === 'select') {
+                    html += `<select onchange="updateFormData('${f.id}', this.value)" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">`;
+                    html += `<option value="">Escolha...</option>`;
+                    f.options.forEach(o => html += `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`);
+                    html += `</select>`;
+                } else {
+                    html += `<textarea oninput="updateFormData('${f.id}', this.value)" class="w-full px-4 py-3 rounded-xl border border-slate-200 h-28 focus:ring-2 focus:ring-indigo-500 outline-none">${val}</textarea>`;
+                }
+                html += `</div>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+
+            document.getElementById('prev-btn').disabled = currentStep === 0;
+            document.getElementById('next-btn').innerText = currentStep === quiz.length - 1 ? 'Finalizar' : 'Seguinte';
+        }
+
+        function updateFormData(id, val) { quizFormData[id] = val; }
+
+        function nextStep() {
+            if (currentStep < QUIZZES[currentQuizType].length - 1) {
+                currentStep++;
+                renderQuizStep();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderQuizStep();
+            }
+        }
+
+        function finishQuiz() {
+            const entry = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                type: currentQuizType,
+                data: {...quizFormData}
+            };
+            responses.push(entry);
+            localStorage.setItem('renascer_data', JSON.stringify(responses));
+            document.getElementById('whatsapp-link').href = WHATSAPP_LINKS[currentQuizType];
+            showView('success');
+        }
+
+        function handleLogin() {
+            if (document.getElementById('admin-pass').value === ADMIN_PASS) {
+                showView('admin-dashboard');
+                renderAdminTable();
+                renderDashboards();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            document.getElementById('admin-respostas-content').classList.add('hidden');
+            document.getElementById('admin-analises-content').classList.add('hidden');
+            document.getElementById(`admin-${tab}-content`).classList.remove('hidden');
+            
+            if(tab === 'analises') renderDashboards();
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '';
+            responses.slice().reverse().forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 text-xs text-slate-400">${new Date(r.date).toLocaleDateString()}</td>
+                    <td class="px-6 py-4 font-bold text-slate-800">${r.data.nome || 'N/A'}</td>
+                    <td class="px-6 py-4 text-slate-500">${r.data.genero || 'N/A'}</td>
+                    <td class="px-6 py-4 text-slate-500">${r.data.contato || 'N/A'}</td>
+                    <td class="px-6 py-4"><span class="px-2 py-1 text-[10px] rounded-full bg-indigo-50 text-indigo-600 font-bold uppercase">${r.type}</span></td>
+                    <td class="px-6 py-4"><button onclick="viewDetails(${r.id})" class="text-indigo-600 font-bold hover:underline">Ver</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderDashboards() {
+            const total = responses.length;
+            if(total === 0) return;
+
+            // Summary Stats
+            document.getElementById('stats-summary').innerHTML = `
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Total Leads</p>
+                    <p class="text-3xl font-bold text-indigo-600">${total}</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Taxa Feminina</p>
+                    <p class="text-3xl font-bold text-pink-500">${Math.round((responses.filter(r => r.data.genero === 'Feminino').length / total) * 100)}%</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Área Favorita</p>
+                    <p class="text-3xl font-bold text-emerald-600">${getMode(responses.map(r => r.type))}</p>
+                </div>
+            `;
+
+            // Charts Helper
+            const drawChart = (containerId, dataMap, color) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                Object.entries(dataMap).forEach(([key, count]) => {
+                    const pct = Math.round((count / total) * 100);
+                    container.innerHTML += `
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="font-bold">${key}</span>
+                                <span class="text-slate-400">${count} (${pct}%)</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div class="h-full ${color}" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            };
+
+            // Gender Chart
+            const genders = countOccurrences(responses.map(r => r.data.genero || 'Não definido'));
+            drawChart('chart-gender', genders, 'bg-pink-400');
+
+            // Age Chart
+            const ages = countOccurrences(responses.map(r => {
+                const a = parseInt(r.data.idade);
+                if(isNaN(a)) return 'N/A';
+                if(a < 20) return '< 20 anos';
+                if(a <= 30) return '20-30 anos';
+                if(a <= 45) return '31-45 anos';
+                return '45+ anos';
+            }));
+            drawChart('chart-age', ages, 'bg-blue-400');
+
+            // Type Chart
+            const types = countOccurrences(responses.map(r => r.type));
+            drawChart('chart-type', types, 'bg-indigo-400');
+
+            // Status Chart (for Profissional)
+            const stats = countOccurrences(responses.map(r => r.data.status || r.data.nivel || r.data.estado || 'Outro'));
+            drawChart('chart-status', stats, 'bg-emerald-400');
+        }
+
+        function countOccurrences(arr) {
+            return arr.reduce((acc, curr) => {
+                acc[curr] = (acc[curr] || 0) + 1;
+                return acc;
+            }, {});
+        }
+
+        function getMode(arr) {
+            const counts = countOccurrences(arr);
+            return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+        }
+
+        function viewDetails(id) {
+            const resp = responses.find(r => r.id === id);
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            modalTitle.innerText = `Diagnóstico: ${resp.data.nome || 'N/A'}`;
+            
+            let html = `<div class="space-y-4">`;
+            const quiz = QUIZZES[resp.type];
+            quiz.forEach(step => {
+                html += `<div class="bg-slate-50 p-4 rounded-xl">
+                    <h4 class="text-indigo-600 font-bold text-xs uppercase mb-2">${step.title}</h4>`;
+                step.fields.forEach(f => {
+                    html += `<p class="text-xs text-slate-400 font-bold mb-1">${f.label}:</p>
+                             <p class="text-sm text-slate-800 mb-3">${resp.data[f.id] || '-'}</p>`;
+                });
+                html += `</div>`;
+            });
+            html += `</div>`;
+            modalContent.innerHTML = html;
+            document.getElementById('response-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('response-modal').classList.add('hidden'); }
+        
+        function exportData() {
+            let csv = "Data,Nome,Genero,Idade,Email,WhatsApp,Tipo\n";
+            responses.forEach(r => {
+                csv += `${new Date(r.date).toLocaleDateString()},"${r.data.nome}","${r.data.genero}","${r.data.idade}","${r.data.email}","${r.data.contato}","${r.type}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leads_renascer_${Date.now()}.csv`;
+            a.click();
+        }
+
+        function logout() { showView('home'); }
+    </script>
+</body>
+</html> 
